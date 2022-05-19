@@ -1,0 +1,53 @@
+<?php
+
+namespace App\Http\Requests\API;
+
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
+class CodeCheckRequest extends FormRequest
+{
+
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            'email'             => ['required', 'email', 'exists:users,email'],
+            'code'              => ['required']
+        ];
+    }
+
+        
+    public function attributes()
+    {
+        return[
+                        
+            'email'              => __('api.email'),
+            'code'               => __('api.code'),
+        ];
+        
+    }
+
+    public function failedValidation(Validator $validator)
+    {
+        
+        $error = $validator->errors()->toArray();
+
+        if ( isset($error['email']) ) {
+            $msg = $error['email'][0];
+            $code = 5004;
+        } elseif( isset($error['code']) ) {
+            $msg = $error['code'][0];
+            $code = 5002;
+        } else {
+            $msg = __('api.error');
+            $code = 5000;
+        }
+
+        throw new HttpResponseException(response()->withError($msg, $code));
+    }
+}
