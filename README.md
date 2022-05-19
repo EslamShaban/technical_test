@@ -11,6 +11,6 @@ php artisan migrate:fresh --seed
 
 ```php
 login page : http://127.0.0.1:8000/login
-email : test@admin.com
+email : test@test.com
 password : 123456
 ```
